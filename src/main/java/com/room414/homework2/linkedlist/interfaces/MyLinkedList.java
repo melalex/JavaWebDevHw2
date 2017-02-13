@@ -6,15 +6,16 @@ package com.room414.homework2.linkedlist.interfaces;
  */
 public interface MyLinkedList<T> extends Iterable<T>, Cloneable {
     int size();
+    T[] asArray();
 
     void addLast(T value);
-    void addLast(MyLinkedList<? extends T> another);
+    void addLast(Iterable<? extends T> another);
     void addFirst(T value);
-    void addFirst(MyLinkedList<? extends T> another);
+    void addFirst(Iterable<? extends T> another);
     void insertAfter(T value, int index);
-    void insertAfter(MyLinkedList<? extends T> another);
+    void insertAfter(Iterable<? extends T> another, int index);
     void insertBefore(T value, int index);
-    void insertBefore(MyLinkedList<? extends T> another, int index);
+    void insertBefore(Iterable<? extends T> another, int index);
 
     T getFirst();
     T getLast();
