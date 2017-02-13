@@ -10,31 +10,90 @@ import java.util.function.Consumer;
  * @version 1.0 13 Feb 2017
  */
 public class SimpleLinkedList<T> implements MyLinkedList<T> {
-    
+    private static class Node<T> {
+        private T value;
+        private Node<T> next;
+
+        private Node(T value) {
+            this.value = value;
+        }
+    }
+
+    private Node<T> first;
+    private Node<T> last;
+    private int size;
+
+    public SimpleLinkedList() {
+
+    }
+
+    public SimpleLinkedList(MyLinkedList<? extends T> another) {
+
+    }
+
+    private Node<T> getNodeAtIndex(int index) {
+        return null;
+    }
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     @Override
     public void addLast(T value) {
+        Node<T> newNode = new Node<>(value);
 
+        if (last == null) {
+            first = last = newNode;
+        } else {
+            last.next = newNode;
+            last = newNode;
+        }
+
+        size++;
     }
 
     @Override
     public void addLast(MyLinkedList<? extends T> another) {
+        SimpleLinkedList<T> appended = new SimpleLinkedList<>(another);
+        size += appended.size();
 
+        if (last == null) {
+            last = appended.last;
+            first = appended.first;
+        } else {
+            last.next = appended.first;
+            last = appended.last;
+        }
     }
 
     @Override
     public void addFirst(T value) {
+        Node<T> newNode = new Node<>(value);
 
+        if (first == null) {
+            first = last = newNode;
+        } else {
+            newNode.next = first;
+            first = newNode;
+        }
+
+        size++;
     }
 
     @Override
     public void addFirst(MyLinkedList<? extends T> another) {
+        SimpleLinkedList<T> appended = new SimpleLinkedList<>(another);
+        size += appended.size();
 
+        if (last == null) {
+            last = appended.last;
+            first = appended.first;
+        } else {
+            appended.last.next = this.first;
+            first = appended.first;
+        }
     }
 
     @Override
@@ -59,12 +118,12 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
 
     @Override
     public T getFirst() {
-        return null;
+        return first.value;
     }
 
     @Override
     public T getLast() {
-        return null;
+        return last.value;
     }
 
     @Override
