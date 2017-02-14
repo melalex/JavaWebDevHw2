@@ -71,7 +71,7 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
 
         Node<T> node = first;
 
-        for (int i = 0; i <= index; i++) {
+        for (int i = 0; i < index; i++) {
             node = node.next;
         }
 
@@ -84,14 +84,16 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
     }
 
     @Override
-    public T[] asArray() {
+    public Object[] asArray() {
         Object[] array = new Object[size];
         Node<T> runner = first;
+
         for (int i = 0; i < size; i++) {
             array[i] = runner.value;
             runner = runner.next;
         }
-        return (T[])array;
+
+        return array;
     }
 
     @Override
@@ -117,7 +119,6 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
         }
 
         SimpleLinkedList<T> appended = new SimpleLinkedList<>(other);
-        size += appended.size;
 
         if (appended.size != 0) {
             if (size == 0) {
@@ -128,6 +129,8 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
                 last = appended.last;
             }
         }
+
+        size += appended.size;
     }
 
     @Override
@@ -151,7 +154,6 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
         }
 
         SimpleLinkedList<T> appended = new SimpleLinkedList<>(other);
-        size += appended.size();
 
         if (appended.size != 0) {
             if (size == 0) {
@@ -162,6 +164,8 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
                 first = appended.first;
             }
         }
+
+        size += appended.size();
     }
 
     @Override
@@ -194,14 +198,15 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
         }
 
         SimpleLinkedList<T> appended = new SimpleLinkedList<>(other);
-        size += appended.size;
 
         if (appended.size != 0) {
             Node<T> nodeBefore = getNodeAtIndex(index);
 
-            appended.last = nodeBefore.next;
-            appended.first = nodeBefore;
+            appended.last.next = nodeBefore.next;
+            nodeBefore.next = appended.first;
         }
+
+        size += appended.size;
     }
 
     @Override
@@ -236,27 +241,40 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
         }
 
         if (index == 0) {
-            insertAfter(other, index - 1);
+            addFirst(other);
         } else {
             SimpleLinkedList<T> appended = new SimpleLinkedList<>(other);
 
             if (size != 0 && appended.size() != 0) {
+                Node<T> before = getNodeAtIndex(index - 1);
+
                 size += appended.size;
 
-                appended.last.next = this.first;
-                this.first = appended.first;
+                appended.last.next = before.next;
+                before.next = appended.first;
             }
         }
     }
 
     @Override
     public T getFirst() {
-        return first.value;
-    }
+        T result = null;
+
+        if (first != null) {
+            result = first.value;
+        }
+
+        return result;    }
 
     @Override
     public T getLast() {
-        return last.value;
+        T result = null;
+
+        if (last != null) {
+            result = last.value;
+        }
+
+        return result;
     }
 
     @Override
@@ -329,6 +347,7 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
         } else {
             Node<T> before = getNodeAtIndex(index - 1);
             before.next = before.next.next;
+            size--;
         }
     }
 
@@ -336,7 +355,7 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
     public void removeFirst(T value) {
         Node<T> node = first;
 
-        if (node.value.equals(value)) {
+        if (node != null && node.value.equals(value)) {
             removeFirst();
             return;
         }
@@ -356,7 +375,7 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
         Node<T> node = first;
         Node<T> beforeRemove = null;
         while (node != null) {
-            if (node.next.value.equals(value)) {
+            if (node.next != null && node.next.value.equals(value)) {
                 beforeRemove = node;
             }
             node = node.next;
@@ -365,7 +384,7 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
         if (beforeRemove != null) {
             beforeRemove.next = beforeRemove.next.next;
             size--;
-        } else if (first.value.equals(value)) {
+        } else if (first != null && first.value.equals(value)) {
             removeFirst();
         }
     }
@@ -374,12 +393,12 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
     public void removeAll(T value) {
         Node<T> node = first;
 
-        if (first.value.equals(value)) {
+        if (node != null && node.value.equals(value)) {
             removeFirst();
         }
 
         while (node != null) {
-            if (node.next.value.equals(value)) {
+            if (node.next != null && node.next.value.equals(value)) {
                 node.next = node.next.next;
                 size--;
             }
@@ -430,6 +449,7 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
             Node<T> before = getNodeAtIndex(index - 1);
             value = before.next.value;
             before.next = before.next.next;
+            size--;
         }
 
         return value;
@@ -484,17 +504,18 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("[");
+        StringBuilder stringBuilder = new StringBuilder();
         Node<T> runner = first;
 
+        stringBuilder.append("[");
         while (runner != null) {
             stringBuilder.append(runner.value.toString());
             if (runner.next != null) {
                 stringBuilder.append(", ");
-            } else {
-                stringBuilder.append("]");
             }
+            runner = runner.next;
         }
+        stringBuilder.append("]");
 
         return stringBuilder.toString();
     }

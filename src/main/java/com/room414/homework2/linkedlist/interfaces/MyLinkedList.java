@@ -6,7 +6,7 @@ package com.room414.homework2.linkedlist.interfaces;
  */
 public interface MyLinkedList<T> extends Iterable<T> {
     int size();
-    T[] asArray();
+    Object[] asArray();
 
     void addLast(T value);
     void addLast(Iterable<? extends T> another);

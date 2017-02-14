@@ -146,7 +146,7 @@ public class MyLinkedListTest {
     void asArray() {
         MyLinkedList<Integer> list = listFrom1to4();
 
-        Integer[] array = list.asArray();
+        Object[] array = list.asArray();
         Integer[] result = arrayFrom1To4();
 
         assert Arrays.equals(array, result);
@@ -407,7 +407,7 @@ public class MyLinkedListTest {
         MyLinkedList<Integer> list = listFrom5to8();
         Integer[] result = arrayFrom1To8();
 
-        list.insertBefore(iterable, list.size() - 1);
+        list.insertBefore(iterable, 0);
 
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
@@ -457,7 +457,7 @@ public class MyLinkedListTest {
     @Test
     void getLast() {
         MyLinkedList<Integer> list = listFrom1to4();
-        assert list.getLast() == 1;
+        assert list.getLast() == 4;
 
         list = listEmpty();
         assert list.getLast() == null;
@@ -850,8 +850,8 @@ public class MyLinkedListTest {
         MyLinkedList<Integer> list = listEmpty();
         list.addFirst(1);
 
-        int element = list.get(2);
-        int resultElement = list.pop(2);
+        int element = list.get(0);
+        int resultElement = list.pop(0);
 
         assert list.getFirst() == null;
         assert list.getLast() == null;
@@ -862,11 +862,11 @@ public class MyLinkedListTest {
     @Test
     void iterator() {
         MyLinkedList<Integer> list = listFrom1to4();
-        Integer[] array = list.asArray();
+        Object[] array = list.asArray();
         int i = 0;
 
         for (Integer integer : list) {
-            assert integer.intValue() == array[i];
+            assert integer.intValue() == ((Integer) array[i]);
             i++;
         }
 
