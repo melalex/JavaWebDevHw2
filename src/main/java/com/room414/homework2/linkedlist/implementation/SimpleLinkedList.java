@@ -4,7 +4,6 @@ import com.room414.homework2.linkedlist.interfaces.MyLinkedList;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.function.Consumer;
 
 /**
  * @author Alexander Melashchenko
@@ -14,7 +13,7 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
     private static final int HASH_CODE_INITIAL_VALUE = 17;
     private static final int HASH_CODE_MULTIPLIER = 37;
 
-    private static final class Node<T> {
+    protected static class Node<T> {
         private T value;
         private Node<T> next;
 
@@ -23,10 +22,10 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
         }
     }
 
-    private static final class SimpleLinkedListIterator<T> implements Iterator<T> {
+    private static final class ForwardLinkedListIterator<T> implements Iterator<T> {
         Node<T> runner;
 
-        private SimpleLinkedListIterator(Node<T> first) {
+        private ForwardLinkedListIterator(Node<T> first) {
             runner = first;
         }
 
@@ -45,16 +44,6 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
                 throw new NoSuchElementException();
             }
         }
-
-        @Override
-        public void remove() {
-
-        }
-
-        @Override
-        public void forEachRemaining(Consumer<? super T> consumer) {
-
-        }
     }
 
     private Node<T> first;
@@ -65,9 +54,9 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
 
     }
 
-    public SimpleLinkedList(Iterable<? extends T> another) {
-        if (another != null) {
-            for (T value: another) {
+    public SimpleLinkedList(Iterable<? extends T> other) {
+        if (other != null) {
+            for (T value: other) {
                 addLast(value);
             }
         }
@@ -107,25 +96,27 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
 
     @Override
     public void addLast(T value) {
-        Node<T> newNode = new Node<>(value);
+        addLast(new Node<>(value));
+    }
 
+    private void addLast(Node<T> node) {
         if (size == 0) {
-            first = last = newNode;
+            first = last = node;
         } else {
-            last.next = newNode;
-            last = newNode;
+            last.next = node;
+            last = node;
         }
 
         size++;
     }
 
     @Override
-    public void addLast(Iterable<? extends T> another) {
-        if (another == null) {
-            throw new IllegalArgumentException("another can't be null");
+    public void addLast(Iterable<? extends T> other) {
+        if (other == null) {
+            throw new IllegalArgumentException("other can't be null");
         }
 
-        SimpleLinkedList<T> appended = new SimpleLinkedList<>(another);
+        SimpleLinkedList<T> appended = new SimpleLinkedList<>(other);
         size += appended.size;
 
         if (appended.size != 0) {
@@ -154,12 +145,12 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
     }
 
     @Override
-    public void addFirst(Iterable<? extends T> another) {
-        if (another == null) {
-            throw new IllegalArgumentException("another can't be null");
+    public void addFirst(Iterable<? extends T> other) {
+        if (other == null) {
+            throw new IllegalArgumentException("other can't be null");
         }
 
-        SimpleLinkedList<T> appended = new SimpleLinkedList<>(another);
+        SimpleLinkedList<T> appended = new SimpleLinkedList<>(other);
         size += appended.size();
 
         if (appended.size != 0) {
@@ -191,18 +182,18 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
     }
 
     @Override
-    public void insertAfter(Iterable<? extends T> another, int index) {
+    public void insertAfter(Iterable<? extends T> other, int index) {
         if (index >= size || index < 0) {
             throw new IndexOutOfBoundsException(String.format(
                     "index should be in range [0;%s). Got %s.", size, index
             ));
         }
 
-        if (another == null) {
-            throw new IllegalArgumentException("another can't be null");
+        if (other == null) {
+            throw new IllegalArgumentException("other can't be null");
         }
 
-        SimpleLinkedList<T> appended = new SimpleLinkedList<>(another);
+        SimpleLinkedList<T> appended = new SimpleLinkedList<>(other);
         size += appended.size;
 
         if (appended.size != 0) {
@@ -233,21 +224,21 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
     }
 
     @Override
-    public void insertBefore(Iterable<? extends T> another, int index) {
+    public void insertBefore(Iterable<? extends T> other, int index) {
         if (index >= size || index < 0) {
             throw new IndexOutOfBoundsException(String.format(
                     "index should be in range [0;%s). Got %s.", size, index
             ));
         }
 
-        if (another == null) {
-            throw new IllegalArgumentException("another can't be null");
+        if (other == null) {
+            throw new IllegalArgumentException("other can't be null");
         }
 
         if (index == 0) {
-            insertAfter(another, index - 1);
+            insertAfter(other, index - 1);
         } else {
-            SimpleLinkedList<T> appended = new SimpleLinkedList<>(another);
+            SimpleLinkedList<T> appended = new SimpleLinkedList<>(other);
 
             if (size != 0 && appended.size() != 0) {
                 size += appended.size;
@@ -344,6 +335,12 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
     @Override
     public void removeFirst(T value) {
         Node<T> node = first;
+
+        if (node.value.equals(value)) {
+            removeFirst();
+            return;
+        }
+
         while (node != null && !node.next.value.equals(value)) {
             node = node.next;
         }
@@ -368,12 +365,19 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
         if (beforeRemove != null) {
             beforeRemove.next = beforeRemove.next.next;
             size--;
+        } else if (first.value.equals(value)) {
+            removeFirst();
         }
     }
 
     @Override
     public void removeAll(T value) {
         Node<T> node = first;
+
+        if (first.value.equals(value)) {
+            removeFirst();
+        }
+
         while (node != null) {
             if (node.next.value.equals(value)) {
                 node.next = node.next.next;
@@ -417,7 +421,7 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
             ));
         }
 
-        T value = null;
+        T value;
         if (index == 0) {
             value = popFirst();
         } else if (index == size - 1) {
@@ -433,21 +437,7 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return new SimpleLinkedListIterator<>(first);
-    }
-
-    @Override
-    public void forEach(Consumer<? super T> consumer) {
-        Node<T> runner = first;
-        while (runner != null) {
-            consumer.accept(runner.value);
-            runner = runner.next;
-        }
-    }
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
+        return new ForwardLinkedListIterator<>(first);
     }
 
     @Override
