@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public abstract class MyLinkedListTest {
     protected abstract MyLinkedList<Integer> createList();
+    protected abstract boolean isSolid(MyLinkedList<Integer> list, Object[] array);
 
     private MyLinkedList<Integer> listFrom1to3() {
         MyLinkedList<Integer> list = createList();
@@ -164,6 +165,8 @@ public abstract class MyLinkedListTest {
         assert list.getFirst() == 1;
         assert list.getLast() == 2;
         assert list.size() == 2;
+
+        assert isSolid(list, new Integer[]{1, 2});
     }
 
     @Test
@@ -176,6 +179,7 @@ public abstract class MyLinkedListTest {
 
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
+        assert isSolid(list, result);
     }
 
     @Test
@@ -187,6 +191,7 @@ public abstract class MyLinkedListTest {
 
         assert Arrays.equals(iterable.toArray(), list.asArray());
         assert iterable.size() == list.size();
+        assert isSolid(list, iterable.toArray());
     }
 
     @Test
@@ -207,6 +212,7 @@ public abstract class MyLinkedListTest {
 
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
+        assert isSolid(list, result);
     }
 
     @Test
@@ -223,6 +229,8 @@ public abstract class MyLinkedListTest {
         assert list.getFirst() == 2;
         assert list.getLast() == 1;
         assert list.size() == 2;
+
+        assert isSolid(list, new Integer[] {2, 1});
     }
 
     @Test
@@ -234,6 +242,7 @@ public abstract class MyLinkedListTest {
 
         assert Arrays.equals(iterable.toArray(), list.asArray());
         assert iterable.size() == list.size();
+        assert isSolid(list, iterable.toArray());
     }
 
     @Test
@@ -246,6 +255,7 @@ public abstract class MyLinkedListTest {
 
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
+        assert isSolid(list, result);
     }
 
     @Test
@@ -266,6 +276,7 @@ public abstract class MyLinkedListTest {
 
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
+        assert isSolid(list, result);
     }
 
     @Test
@@ -277,6 +288,7 @@ public abstract class MyLinkedListTest {
 
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
+        assert isSolid(list, result);
     }
 
     @Test
@@ -302,6 +314,7 @@ public abstract class MyLinkedListTest {
 
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
+        assert isSolid(list, result);
     }
 
     @Test
@@ -322,6 +335,7 @@ public abstract class MyLinkedListTest {
 
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
+        assert isSolid(list, result);
     }
 
     @Test
@@ -334,6 +348,7 @@ public abstract class MyLinkedListTest {
 
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
+        assert isSolid(list, result);
     }
 
     @Test
@@ -354,6 +369,7 @@ public abstract class MyLinkedListTest {
 
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
+        assert isSolid(list, result);
     }
 
     @Test
@@ -365,6 +381,7 @@ public abstract class MyLinkedListTest {
 
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
+        assert isSolid(list, result);
     }
 
     @Test
@@ -389,6 +406,7 @@ public abstract class MyLinkedListTest {
 
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
+        assert isSolid(list, result);
     }
 
     @Test
@@ -409,6 +427,7 @@ public abstract class MyLinkedListTest {
 
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
+        assert isSolid(list, result);
     }
 
     @Test
@@ -421,6 +440,7 @@ public abstract class MyLinkedListTest {
 
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
+        assert isSolid(list, result);
     }
 
     @Test
@@ -441,6 +461,17 @@ public abstract class MyLinkedListTest {
 
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
+        assert isSolid(list, result);
+    }
+
+    @Test
+    void addNull() {
+        MyLinkedList<Integer> list = listFrom1to4();
+        Integer integerNull = null;
+        assertThrows(IllegalArgumentException.class, () -> list.addLast(integerNull));
+        assertThrows(IllegalArgumentException.class, () -> list.addFirst(integerNull));
+        assertThrows(IllegalArgumentException.class, () -> list.insertAfter(integerNull, 0));
+        assertThrows(IllegalArgumentException.class, () -> list.insertBefore(integerNull, 0));
     }
 
     @Test
@@ -531,6 +562,7 @@ public abstract class MyLinkedListTest {
 
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
+        assert isSolid(list, result);
     }
 
     @Test
@@ -563,6 +595,7 @@ public abstract class MyLinkedListTest {
 
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
+        assert isSolid(list, result);
     }
 
     @Test
@@ -595,6 +628,7 @@ public abstract class MyLinkedListTest {
 
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
+        assert isSolid(list, result);
     }
 
     @Test
@@ -628,6 +662,7 @@ public abstract class MyLinkedListTest {
 
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
+        assert isSolid(list, result);
     }
 
     @Test
@@ -662,6 +697,7 @@ public abstract class MyLinkedListTest {
 
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
+        assert isSolid(list, result);
     }
 
     @Test
@@ -696,6 +732,7 @@ public abstract class MyLinkedListTest {
 
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
+        assert isSolid(list, result);
     }
 
     @Test
@@ -754,6 +791,7 @@ public abstract class MyLinkedListTest {
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
         assert first == firstResult;
+        assert isSolid(list, result);
     }
 
     @Test
@@ -793,6 +831,7 @@ public abstract class MyLinkedListTest {
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
         assert last == lastResult;
+        assert isSolid(list, result);
     }
 
     @Test
@@ -832,6 +871,7 @@ public abstract class MyLinkedListTest {
         assert Arrays.equals(result, list.asArray());
         assert result.length == list.size();
         assert element == resultElement;
+        assert isSolid(list, result);
     }
 
     @Test

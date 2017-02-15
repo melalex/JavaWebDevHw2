@@ -13,4 +13,18 @@ class SimpleLinkedListTest extends MyLinkedListTest {
     protected MyLinkedList<Integer> createList() {
         return new SimpleLinkedList<>();
     }
+
+    @Override
+    protected boolean isSolid(MyLinkedList<Integer> list, Object[] array) {
+        int i = 0;
+
+        for (Integer integer : list) {
+            if (!integer.equals(array[i])) {
+                return false;
+            }
+            i++;
+        }
+
+        return true;
+    }
 }

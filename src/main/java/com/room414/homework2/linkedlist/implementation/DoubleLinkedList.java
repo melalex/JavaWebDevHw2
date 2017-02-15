@@ -255,6 +255,12 @@ public class DoubleLinkedList<T> extends SimpleLinkedList<T> {
 
     @Override
     public void insertBefore(T value, int index) {
+        if (index >= size || index < 0) {
+            throw new IndexOutOfBoundsException(String.format(
+                    "index should be in range [0;%s). Got %s.", size, index
+            ));
+        }
+
         if (index == 0) {
             addFirst(value);
         } else {
