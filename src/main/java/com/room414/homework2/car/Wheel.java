@@ -1,4 +1,4 @@
-package com.room414.homework2.shape.car;
+package com.room414.homework2.car;
 
 /**
  * @author Alexander Melashchenko

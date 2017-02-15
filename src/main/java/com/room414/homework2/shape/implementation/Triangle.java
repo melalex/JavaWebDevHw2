@@ -18,7 +18,15 @@ public class Triangle extends Shape {
     }
 
     public static Triangle createTriangle(double a, double b, double c) {
+        if (a <= 0 || b <= 0 || c <= 0) {
+            throw new IllegalArgumentException("Side can't be <= 0");
+        }
 
+        if (!(a + b > c) || !(b + c > a) || !(a + c > b)) {
+            throw new IllegalArgumentException(String.format(
+                    "Triangle with sides %s, %s, %s doesn't exist.", a, b, c
+            ));
+        }
         return new Triangle(a, b, c);
     }
 
@@ -36,6 +44,7 @@ public class Triangle extends Shape {
 
     @Override
     public double getArea() {
-        return 0;
+        double p = (a + b + c) / 2;
+        return Math.sqrt(p * (p - a) * (p - b) * (p - c));
     }
 }

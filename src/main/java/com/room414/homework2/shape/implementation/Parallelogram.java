@@ -7,26 +7,36 @@ import com.room414.homework2.shape.interfaces.Shape;
  * @version 1.0 13 Feb 2017
  */
 public class Parallelogram extends Shape {
-    private double width;
-    private double height;
+    private double aSide;
+    private double bSide;
     private double angle;
 
-    private Parallelogram(double width, double height, double angle) {
-        this.width = width;
-        this.height = height;
+    private Parallelogram(double aSide, double bSide, double angle) {
+        this.aSide = aSide;
+        this.bSide = bSide;
         this.angle = angle;
     }
 
-    public static Parallelogram createParallelogram(double width, double height, double angle) {
-        return new Parallelogram(width, height, angle);
+    public static Parallelogram createParallelogram(double aSide, double bSide, double angle) {
+        if (angle <= 0 || angle >= Math.PI) {
+            throw new IllegalArgumentException(String.format(
+                    "angle should be in range (0; %s). Got %s.", Math.PI, angle
+            ));
+        }
+
+        if (aSide <= 0 || bSide <= 0) {
+            throw new IllegalArgumentException("Side can't be <= 0");
+        }
+
+        return new Parallelogram(aSide, bSide, angle);
     }
 
-    public double getWidth() {
-        return width;
+    public double getASide() {
+        return aSide;
     }
 
-    public double getHeight() {
-        return height;
+    public double getBSide() {
+        return bSide;
     }
 
     public double getAngle() {
@@ -35,6 +45,6 @@ public class Parallelogram extends Shape {
 
     @Override
     public double getArea() {
-        return 0;
+        return aSide * bSide * Math.sin(angle);
     }
 }

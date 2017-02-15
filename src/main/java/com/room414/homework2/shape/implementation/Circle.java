@@ -6,11 +6,19 @@ import com.room414.homework2.shape.interfaces.Shape;
  * @author Alexander Melashchenko
  * @version 1.0 13 Feb 2017
  */
-public class Ring extends Shape {
+public class Circle extends Shape {
     private double radius;
 
-    public Ring(double radius) {
+    private Circle(double radius) {
         this.radius = radius;
+    }
+
+    public static Circle createCircle(double radius) {
+        if (radius <= 0) {
+            throw new IllegalArgumentException("radius can't be <= 0");
+        }
+
+        return new Circle(radius);
     }
 
     public double getRadius() {
@@ -19,6 +27,6 @@ public class Ring extends Shape {
 
     @Override
     public double getArea() {
-        return 4 * Math.PI * radius * radius;
+        return Math.PI * Math.pow(radius, 2);
     }
 }

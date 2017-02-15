@@ -5,8 +5,8 @@ package com.room414.homework2.shape.interfaces;
  * @version 1.0 13 Feb 2017
  */
 public abstract class Shape {
-    public double addition(Shape another) {
-        return this.getArea() + another.getArea();
+    public double addition(Shape other) {
+        return this.getArea() + other.getArea();
     }
 
     public abstract double getArea();
