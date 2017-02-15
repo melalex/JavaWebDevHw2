@@ -99,9 +99,9 @@ public class DoubleLinkedList<T> extends SimpleLinkedList<T> {
         if (index < size() - 1 - index) {
             return ((DoubleLinkedNode<T>) super.getNodeAtIndex(index));
         } else {
-            DoubleLinkedNode<T> runner = getFirstNode();
+            DoubleLinkedNode<T> runner = getLastNode();
 
-            for (int i = size - 1; i >= index; i--) {
+            for (int i = size() - 1; i > index; i--) {
                 runner = runner.getPrevious();
             }
 
@@ -114,7 +114,7 @@ public class DoubleLinkedList<T> extends SimpleLinkedList<T> {
         DoubleLinkedNode<T> node = createNode(value);
         DoubleLinkedNode<T> lastNode = getLastNode();
 
-        if (size == 0) {
+        if (size() == 0) {
             setFirstNode(node);
             setLastNode(node);
         } else {
@@ -212,11 +212,9 @@ public class DoubleLinkedList<T> extends SimpleLinkedList<T> {
             nodeAfter.setPrevious(newNode);
             newNode.setPrevious(nodeBefore);
             nodeBefore.setNext(newNode);
+
+            size++;
         }
-
-
-
-        size++;
     }
 
     @Override
@@ -270,6 +268,12 @@ public class DoubleLinkedList<T> extends SimpleLinkedList<T> {
 
     @Override
     public void insertBefore(Iterable<? extends T> other, int index) {
+        if (index >= size || index < 0) {
+            throw new IndexOutOfBoundsException(String.format(
+                    "index should be in range [0;%s). Got %s.", size, index
+            ));
+        }
+
         if (index == 0) {
             addFirst(other);
         } else {
@@ -298,21 +302,21 @@ public class DoubleLinkedList<T> extends SimpleLinkedList<T> {
             setLastNode(null);
             size = 0;
         } else if (size() != 0) {
-            DoubleLinkedNode<T> nodeAfter = getLastNode().getPrevious();
-            setLastNode(nodeAfter);
-            nodeAfter.setNext(null);
+            DoubleLinkedNode<T> nodeBefore = getLastNode().getPrevious();
+            setLastNode(nodeBefore);
+            nodeBefore.setNext(null);
             size--;
         }
     }
 
     private void remove(DoubleLinkedNode<T> node) {
-        if (node == getFirst()) {
+        if (node == getFirstNode()) {
             removeFirst();
         } else if (node == getLastNode()) {
             removeLast();
         } else if (size() != 0) {
             DoubleLinkedNode<T> nodeBefore = node.getPrevious();
-            DoubleLinkedNode<T> nodeAfter = node.getPrevious();
+            DoubleLinkedNode<T> nodeAfter = node.getNext();
 
             nodeBefore.setNext(nodeAfter);
             nodeAfter.setPrevious(nodeBefore);

@@ -269,7 +269,8 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
             result = first.value;
         }
 
-        return result;    }
+        return result;
+    }
 
     @Override
     public T getLast() {
