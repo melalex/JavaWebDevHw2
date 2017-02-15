@@ -1,7 +1,5 @@
 package com.room414.homework2.linkedlist.interfaces;
 
-import com.room414.homework2.linkedlist.factories.LinkedListFactory;
-import com.room414.homework2.linkedlist.factories.SimpleLinkedListFactory;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -14,11 +12,11 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Alexander Melashchenko
  * @version 1.0 13 Feb 2017
  */
-public class MyLinkedListTest {
-    protected LinkedListFactory<Integer> testFactory = new SimpleLinkedListFactory<>();
+public abstract class MyLinkedListTest {
+    protected abstract MyLinkedList<Integer> createList();
 
     private MyLinkedList<Integer> listFrom1to3() {
-        MyLinkedList<Integer> list = testFactory.create();
+        MyLinkedList<Integer> list = createList();
 
         list.addLast(1);
         list.addLast(2);
@@ -28,7 +26,7 @@ public class MyLinkedListTest {
     }
 
     private MyLinkedList<Integer> listFrom2to4() {
-        MyLinkedList<Integer> list = testFactory.create();
+        MyLinkedList<Integer> list = createList();
 
         list.addLast(2);
         list.addLast(3);
@@ -46,7 +44,7 @@ public class MyLinkedListTest {
     }
 
     private MyLinkedList<Integer> listFrom5to8() {
-        MyLinkedList<Integer> list = testFactory.create();
+        MyLinkedList<Integer> list = createList();
 
         list.addLast(5);
         list.addLast(6);
@@ -57,7 +55,7 @@ public class MyLinkedListTest {
     }
 
     private MyLinkedList<Integer> list124() {
-        MyLinkedList<Integer> list = testFactory.create();
+        MyLinkedList<Integer> list = createList();
 
         list.addLast(1);
         list.addLast(2);
@@ -67,7 +65,7 @@ public class MyLinkedListTest {
     }
 
     private MyLinkedList<Integer> list1278() {
-        MyLinkedList<Integer> list = testFactory.create();
+        MyLinkedList<Integer> list = createList();
 
         list.addLast(1);
         list.addLast(2);
@@ -78,7 +76,7 @@ public class MyLinkedListTest {
     }
 
     private MyLinkedList<Integer> listEmpty() {
-        return testFactory.create();
+        return createList();
     }
 
     private List<Integer> iterableFrom1to4() {
@@ -230,7 +228,7 @@ public class MyLinkedListTest {
     @Test
     void addFirstIterableToEmpty() {
         List<Integer> iterable = iterableFrom1to4();
-        MyLinkedList<Integer> list = testFactory.create();
+        MyLinkedList<Integer> list = listEmpty();
 
         list.addFirst(iterable);
 

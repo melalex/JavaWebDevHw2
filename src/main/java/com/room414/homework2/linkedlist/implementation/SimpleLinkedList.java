@@ -14,10 +14,10 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
     private static final int HASH_CODE_MULTIPLIER = 37;
 
     protected static class Node<T> {
-        private T value;
-        private Node<T> next;
+        protected T value;
+        protected Node<T> next;
 
-        private Node(T value) {
+        protected Node(T value) {
             this.value = value;
         }
     }
@@ -46,9 +46,9 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
         }
     }
 
-    private Node<T> first;
-    private Node<T> last;
-    private int size;
+    protected Node<T> first;
+    protected Node<T> last;
+    protected int size;
 
     public SimpleLinkedList() {
 
@@ -62,7 +62,15 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
         }
     }
 
-    private Node<T> getNodeAtIndex(int index) {
+    protected Node<T> createNode(T value) {
+        if (value == null) {
+            throw new IllegalArgumentException("MyLinkedList can't store null");
+        }
+
+        return new Node<>(value);
+    }
+
+    protected Node<T> getNodeAtIndex(int index) {
         if (index >= size || index < 0) {
             throw new IndexOutOfBoundsException(String.format(
                     "index should be in range [0;%s). Got %s.", size, index
@@ -98,7 +106,7 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
 
     @Override
     public void addLast(T value) {
-        addLast(new Node<>(value));
+        addLast(createNode(value));
     }
 
     private void addLast(Node<T> node) {
@@ -135,7 +143,7 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
 
     @Override
     public void addFirst(T value) {
-        Node<T> newNode = new Node<>(value);
+        Node<T> newNode = createNode(value);
 
         if (size() == 0) {
             first = last = newNode;
@@ -177,9 +185,14 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
         }
 
         Node<T> nodeBefore = getNodeAtIndex(index);
-        Node<T> newNode = new Node<>(value);
+        Node<T> newNode = createNode(value);
 
-        newNode.next = nodeBefore.next;
+        if (nodeBefore.next != null) {
+            newNode.next = nodeBefore.next;
+        } else {
+            last = newNode;
+        }
+
         nodeBefore.next = newNode;
 
         size++;
@@ -202,7 +215,12 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
         if (appended.size != 0) {
             Node<T> nodeBefore = getNodeAtIndex(index);
 
-            appended.last.next = nodeBefore.next;
+            if (nodeBefore.next != null) {
+                appended.last.next = nodeBefore.next;
+            } else {
+                last = appended.last;
+            }
+
             nodeBefore.next = appended.first;
         }
 
@@ -211,20 +229,10 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
 
     @Override
     public void insertBefore(T value, int index) {
-        if (index >= size || index < 0) {
-            throw new IndexOutOfBoundsException(String.format(
-                    "index should be in range [0;%s). Got %s.", size, index
-            ));
-        }
-
-        Node<T> newNode = new Node<>(value);
-
         if (index != 0) {
             insertAfter(value, index - 1);
         } else {
-            newNode.next = first;
-            first = newNode;
-            size++;
+            addFirst(value);
         }
     }
 
@@ -243,16 +251,7 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
         if (index == 0) {
             addFirst(other);
         } else {
-            SimpleLinkedList<T> appended = new SimpleLinkedList<>(other);
-
-            if (size != 0 && appended.size() != 0) {
-                Node<T> before = getNodeAtIndex(index - 1);
-
-                size += appended.size;
-
-                appended.last.next = before.next;
-                before.next = appended.first;
-            }
+            insertAfter(other, index - 1);
         }
     }
 
@@ -285,7 +284,7 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
     @Override
     public void setFirst(T value) {
         if (first == null) {
-            first = last = new Node<>(value);
+            first = last = createNode(value);
             size++;
         } else {
             first.value = value;
@@ -295,7 +294,7 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
     @Override
     public void setLast(T value) {
         if (last == null) {
-            first = last = new Node<>(value);
+            first = last = createNode(value);
             size++;
         } else {
             last.value = value;
@@ -364,7 +363,9 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
             node = node.next;
         }
 
-        if (node != null) {
+        if (node == last) {
+            removeLast();
+        } else if (node != null) {
             node.next = node.next.next;
             size--;
         }
@@ -374,6 +375,12 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
     public void removeLast(T value) {
         Node<T> node = first;
         Node<T> beforeRemove = null;
+
+        if (last != null && last.value.equals(value)) {
+            removeLast();
+            return;
+        }
+
         while (node != null) {
             if (node.next != null && node.next.value.equals(value)) {
                 beforeRemove = node;
@@ -392,16 +399,20 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
     @Override
     public void removeAll(T value) {
         Node<T> node = first;
-
-        if (node != null && node.value.equals(value)) {
-            removeFirst();
-        }
+        Node<T> previousNode = null;
 
         while (node != null) {
-            if (node.next != null && node.next.value.equals(value)) {
-                node.next = node.next.next;
-                size--;
+            if (node.value.equals(value)) {
+                if (node == first) {
+                    removeFirst();
+                } else if (node == last) {
+                    removeLast();
+                } else if (previousNode != null) {
+                    previousNode.next = node.next;
+                    size--;
+                }
             }
+            previousNode = node;
             node = node.next;
         }
     }
@@ -446,10 +457,8 @@ public class SimpleLinkedList<T> implements MyLinkedList<T> {
         } else if (index == size - 1) {
             value = popLast();
         } else {
-            Node<T> before = getNodeAtIndex(index - 1);
-            value = before.next.value;
-            before.next = before.next.next;
-            size--;
+            value = getNodeAtIndex(index).value;
+            remove(index);
         }
 
         return value;
