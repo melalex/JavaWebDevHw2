@@ -96,7 +96,7 @@ public class Car {
             return false;
         }
 
-        if (engine.tryDamage()) {
+        if (!engine.tryDamage()) {
             return false;
         }
 

@@ -36,12 +36,26 @@ class CarTest {
 
     @Test
     void tankUp() {
+        Wheel[] wheels = new Wheel[] {
+                Wheel.createWheel(null, null, 3, 1),
+                Wheel.createWheel(null, null, 3, 1),
+                Wheel.createWheel(null, null, 3, 1),
+                Wheel.createWheel(null, null, 3, 1)
+        };
 
+        Car car = Car.carBuilder()
+                .setConsumption(1)
+                .setTankValue(3)
+                .setEngine(Engine.createEngine("", "", 3, 1))
+                .setWheels(wheels)
+                .createCar();
+
+        while (car.go());
+
+        car.tankUp(2);
+
+        assert car.getFuel() == 2;
+
+        assertThrows(IllegalArgumentException.class, () -> car.tankUp(4));
     }
-
-    @Test
-    void changeWheel() {
-
-    }
-
 }
